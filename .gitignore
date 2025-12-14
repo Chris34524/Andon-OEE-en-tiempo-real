@@ -1,0 +1,17 @@
+# Maven / Java
+target/
+*.log
+*.class
+
+# Maven wrapper
+.mvn/
+mvnw
+mvnw.cmd
+
+# IDEs
+.idea/
+.vscode/
+
+# Sistema
+.DS_Store
+Thumbs.db
