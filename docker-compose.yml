@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  andon-db:
+    image: timescale/timescaledb:latest-pg16
+    container_name: andon-db
+    restart: always
+    environment:
+      POSTGRES_USER: andon_user
+      POSTGRES_PASSWORD: andon_password
+      POSTGRES_DB: andon_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - andon-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U andon_user -d andon_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  andon-backend:
+    build:
+      context: ./backend/andon-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://andon-db:5432/andon_db
+      SPRING_DATASOURCE_USERNAME: andon_user
+      SPRING_DATASOURCE_PASSWORD: andon_password
+    ports:
+      - "8080:8080"
+    depends_on:
+      andon-db:
+        condition: service_healthy
+
+volumes:
+  andon-db-data:
